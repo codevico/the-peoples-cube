@@ -2,6 +2,8 @@ import { Client, Collection, Events, GatewayIntentBits, Partials, PollLayoutType
 import { Telegraf } from 'telegraf'
 import { escapeMarkdownV2 } from './utils.js'
 import { handleDiscordPoll, handleTelegramPoll } from './polls.js'
+import path from 'path'
+import fs from 'fs'
 
 class AgnosticCommand {
     callback = null
@@ -128,17 +130,39 @@ export class AgnosticBot {
             })
         }
     }
-    registerCommandsOnDiscord = async(discordClientId, commands) => {
-        const rest = new REST({version: '10'}).setToken(this.discordToken)
-        try {
-            const commandsToSend = commands.filter(command => command.description != null).map(command => ({
-                name: command.name,
-                description: command.description || '',
-                options: command.options || undefined
-            }))
-            await rest.put(Routes.applicationCommands(discordClientId), {body: commandsToSend})
-        } catch (error) {
-            console.error(error)
+}
+
+export const loadCommands = async() => {
+    const commands = []
+    const categoriesRoot = path.join(import.meta.dirname, '..', 'commands')
+    const categoriesDirs = fs.readdirSync(categoriesRoot)
+    for (const dir of categoriesDirs) {
+        const commandsDir = path.join(categoriesRoot, dir)
+        const commandsFiles = fs.readdirSync(commandsDir).filter(file => file.endsWith('.js'))
+        for (const file of commandsFiles) {
+            const filePath = path.join(commandsDir, file)
+            console.log('Importing command', filePath)
+            const command = await import(`file://${filePath}`)
+            if ('data' in command && 'execute' in command) {
+                commands.push(command)
+            } else {
+                console.warn(`The command at ${filePath} is missing a required "data" or "execute" property.`)
+            }
         }
+    }
+    return commands
+}
+
+export const registerCommandsOnDiscord = async(discordClientId, commands) => {
+    const rest = new REST({version: '10'}).setToken(process.env.DISCORD_TOKEN)
+    try {
+        const commandsToSend = commands.filter(command => command.description != null).map(command => ({
+            name: command.name,
+            description: command.description || '',
+            options: command.options || undefined
+        }))
+        await rest.put(Routes.applicationCommands(discordClientId), {body: commandsToSend})
+    } catch (error) {
+        console.error(error)
     }
 }
