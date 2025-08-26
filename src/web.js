@@ -11,7 +11,9 @@ export const startWebServer = () => {
 
     const app = express()
     
-    app.get('/', (req, res) => {
+    app.use(express.static('public'))
+
+    app.get('/list', (req, res) => {
         res.type('text/plain')
         res.send(getAllCubeCards().filter(card => card.voted === 1).map(card => card.card_name).join('\n'))
     })
