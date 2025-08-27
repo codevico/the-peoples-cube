@@ -30,5 +30,5 @@ You have to register commands to discord in order for the bot to work. Since thi
 
 A web server can be exposed if configured. It currently supports two endpoints:
 
-- `/` - Returns a plaintext list of approved cards, one per row.
+- `/list` - Returns a plaintext list of approved cards, one per row.
 - `/json` - Returns a json array of all voted cards. Each card includes a property specifying whether it was approved or rejected.
