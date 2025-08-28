@@ -1,6 +1,6 @@
 # The people's cube
 
-Create a Magic: The Gathering [cube](https://mtg.fandom.com/wiki/Cube_Draft) by democratically voting on cards together with your friend group.
+Create a Magic: The Gathering [cube](https://mtg.fandom.com/wiki/Cube_Draft) with your friends by democratically voting on cards.
 
 Start a poll on Telegram or Discord with `/propose <card name>`. After reaching the configured amount of votes the card will automatically be either approved or rejected.
 
@@ -32,3 +32,5 @@ A web server can be exposed if configured. It currently supports two endpoints:
 
 - `/list` - Returns a plaintext list of approved cards, one per row.
 - `/json` - Returns a json array of all voted cards. Each card includes a property specifying whether it was approved or rejected.
+
+You can also serve static files by placing them in the `/public` directory.
