@@ -2,8 +2,11 @@ import 'dotenv/config'
 import { AgnosticBot, loadCommands } from './src/bot.js'
 import { createTables } from './src/db.js'
 import { startWebServer } from './src/web.js'
+import { setAgent } from 'scryfall-sdk'
 
 createTables()
+
+setAgent('the-peoples-cube', '1.0.0')
 
 const bot = new AgnosticBot({
     discordToken: process.env.DISCORD_TOKEN?.trim(),
