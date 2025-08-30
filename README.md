@@ -19,10 +19,25 @@ The current version of the people's cube can only be self hosted.
 
 # Commands
 
-- `/propose <card name>`: starts a new poll
-- `/cube stats`: prints some stats about the cube
-- `/cube stats color`: prints a table with the color balance of the cube
-- `/cube stats cmc`: prints a table with the cost balance of the cube
+## Cube commands
+
+- `/propose <card name>`: starts a new poll.
+- `/cube stats`: prints some stats about the cube.
+- `/cube stats color`: prints a table with the color balance of the cube.
+- `/cube stats cmc`: prints a table with the cost balance of the cube.
+
+## Generic commands
+
+- `/card <query>`: search a card and print its image.
+- `/oracle <query>`: search a card and print its oracle text.
+
+Queries starting with `?` will use Scryfall's [search syntax](https://scryfall.com/docs/syntax), for example
+
+`/card ? c=ub kw:"first strike" toughness=3`
+
+Queries not starting with `?` will only search cards by name.
+
+## Command registration
 
 You have to register commands to discord in order for the bot to work. Since this operation is rate limited it has its own script, `npm run register-commands`. You only need to run this once.
 

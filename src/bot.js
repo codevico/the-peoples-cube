@@ -30,11 +30,19 @@ class AgnosticCommand {
                     return context.reply(message)
                 }
             },
-            replyWithPhoto: ({ url }) => {
+            replyWithPhoto: async({ urls }) => {
                 if (context.replyWithPhoto) {
-                    return context.replyWithPhoto({ url })
+                    const result = context.replyWithPhoto({ url: urls[0] })
+                    for (const additionalUrl of urls.splice(1)) {
+                        context.replyWithPhoto({ url: additionalUrl })
+                    }
+                    return result
                 } else {
-                    return context.reply(url)
+                    const result = await context.reply(urls[0])
+                    for (const additionalUrl of urls.splice(1)) {
+                        await context.followUp(additionalUrl)
+                    }
+                    return result
                 }
             },
             sendPoll: (chatId, question, answers, options) => {
@@ -57,7 +65,7 @@ class AgnosticCommand {
                     const parts = context.update.message?.text?.split(' ')
                     if (parts?.length > 1) return parts.splice(1).join(' ')
                 } else if (context.options) {
-                    return context.options.getString(optionName)
+                    return context.options.data?.[0]?.value || ''
                 }
                 return null
             }
@@ -119,13 +127,21 @@ export class AgnosticBot {
                     console.warn(`Ignoring message coming from non-whitelisted chat ${context.chat.id}`)
                     return
                 }
-                command.executeCallback(context)
+                try {
+                    command.executeCallback(context)
+                } catch (error) {
+                    console.error(`error while executing command [${name}] on telegram`, error)
+                }
             })
         }
         if (this.discordBot) {
             this.discordBot.commands.set(name, {
                 execute: async(interaction) => {
-                    command.executeCallback(interaction)
+                    try {
+                        command.executeCallback(interaction)
+                    } catch (error) {
+                        console.error(`error while executing command [${name}] on discord`, error)
+                    }
                 }
             })
         }

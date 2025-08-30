@@ -6,7 +6,7 @@ import { activeDiscordPollsByCardName, activePolls, OPTION_YES, OPTION_NO } from
 
 export const data = new SlashCommandBuilder()
     .setName('propose')
-    .setDescription('Propose a new card for the cube')
+    .setDescription('Propose a new card for the cube.')
     .addStringOption((option) => option.setName('query').setDescription('Card name'))
 
 export async function execute(context) {
@@ -28,7 +28,7 @@ export async function execute(context) {
         return
     }
     context.replyWithPhoto({
-        url: getCardImages(card)[0]
+        urls: [getCardImages(card)[0]]
     }).then(imageContext => {
         const isTelegram = !!imageContext?.message_id
 

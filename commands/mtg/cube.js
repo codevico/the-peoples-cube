@@ -3,7 +3,7 @@ import { getAllCubeCards, getCmcCount, getColorCount } from '../../src/db.js'
 
 export const data = new SlashCommandBuilder()
     .setName('cube')
-    .setDescription('Info on the cube')
+    .setDescription('Info on the cube.')
     .addStringOption((option) => option.setName('query').setDescription('Arguments'))
 
 export async function execute(context) {
